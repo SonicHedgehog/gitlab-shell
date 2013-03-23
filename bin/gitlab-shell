@@ -5,6 +5,17 @@ unless ENV['SSH_CONNECTION']
   exit
 end
 
+if ARGV[1] == "-s"
+	ssh_original_command = ENV['SSH_ORIGINAL_COMMAND']
+
+	unless ssh_original_command and ssh_original_command.match /^git-upload-pack|^git-receive-pack|^git-upload-archive/
+		command = ENV['SHELL']
+		command += (" -c " + ssh_original_command) if ssh_original_command
+
+		exec (command)
+	end
+end
+
 require_relative '../lib/gitlab_init'
 
 #
